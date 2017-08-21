@@ -38,14 +38,25 @@ function player:init(x, y, explosion)
   self.animationSpeed = 8
   
   -- Spawn Animation
-  self.startPos = {x = -100,y = -50}
-  
-  self.control = function()
-    self.inControl = not self.inControl
-    Timer.clear()
+  self.offScreenStart = function()
+    return {x = -100,y = -50}
   end
+  
+  self.inControlStart = {x = self.startX, y = self.startY}
+  
+  
+  
+  self.controlChange = function(newState)
+    self.inControl = newState
+  end
+  self.aliveChange = function(newState)
+    self.isAlive = newState
+  end
+  
+  self.respawnTween = ""
   self.newTween = function()
-    Timer.tween(5, self.pos, {x = self.startX,y = self.startY}, 'linear', self.control)
+    self.respawnTween = Timer.new()
+    self.respawnTween:tween(2, self.pos, {x = self.inControlStart.x, y = self.inControlStart.y}, 'linear', self.controlChange)
   end
   
   
@@ -74,15 +85,16 @@ end
 
 function player:update(dt)
   
+--  text[#text+1] = string.format("Beginning of update. XY: %.0f, %.0f",self.pos.x, self.pos.y)
+  
   
   -- Spawning Cinematic
     if not self.inControl then
       if not self.isAlive then
-        self.pos = self.startPos
-        self.isAlive = true
         self.newTween()
+        self.aliveChange(true)
       end
-    Timer.update(dt)
+    self.respawnTween:update(dt)
     end
   
   
@@ -127,18 +139,19 @@ function player:update(dt)
     
     --Update Physics
     self.rect:moveTo(self.pos.x, self.pos.y)
-    
-    --Test Collisions
-    for shape, delta in pairs(HC.collisions(self.rect)) do
-        text[#text+1] = string.format("Colliding. Separating vector = (%s,%s)",delta.x, delta.y)
-        self.isAlive = false
-        self.inControl = false
+    local collisions = HC.collisions(self.rect)
+    --Test Collisions    
+    for shape, delta in pairs(collisions) do
+        self.aliveChange(false)
+        self.controlChange(false)
         self.explosion:boom(self.pos.x,self.pos.y)
+        self.pos = self.offScreenStart()
+        break
     end
     
-    while #text > 40 do
-      table.remove(text, 1)
-    end
+--    while #text > 40 do
+--      table.remove(text, 1)
+--    end
     -- Update Particles
     
     self.exhaust:moveTo(self.pos.x, self.pos.y)
@@ -152,6 +165,8 @@ function player:update(dt)
   
   -- HAPPENS REGARDLESS
   self.exhaust:update(dt)
+  
+--  text[#text+1] = string.format("End of update. XY: %.0f, %.0f",self.pos.x, self.pos.y)
 end
 
 
@@ -161,10 +176,10 @@ function player:draw()
     love.graphics.draw(self.exhaust)
     
     love.graphics.draw(spritesheet, self.frames[math.floor(self.currentFrame)], self.pos.x, self.pos.y, self.rot, self.scale, self.scale, self.xOriginOffset, self.yOriginOffset)
-    for i = 1,#text do
-      love.graphics.setColor(0,0,0, 255 - (i-1) * 6)
-      love.graphics.print(text[#text - (i-1)], 10, i * 15)
-    end
+--    for i = 1,#text do
+--      love.graphics.setColor(0,0,0, 255 - (i-1) * 6)
+--      love.graphics.print(text[#text - (i-1)], 10, i * 15)
+--    end
     love.graphics.setColor(255,255,255)
   end
 end

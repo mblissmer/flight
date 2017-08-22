@@ -14,13 +14,11 @@ function player:init(x, y, explosion)
   -- Properties
   self.inControl = true
   self.isAlive = true
-  self.frame_width = 87
-  self.frame_height = 72
-  self.xOriginOffset = self.frame_width / 2
-  self.yOriginOffset = self.frame_height / 2
+  local frame_width = 87
+  local frame_height = 72
+  self.xOriginOffset = frame_width / 2
+  self.yOriginOffset = frame_height / 2
   self.pos = {x = x, y = y}
-  self.startX = x
-  self.startY = y
   self.rot = 0
   self.maxRot = .2
   self.rotSpeed = 5
@@ -30,10 +28,10 @@ function player:init(x, y, explosion)
   
   -- Animation Info
   self.frames = {}
-  table.insert(self.frames, love.graphics.newQuad(330, 1371, self.frame_width, self.frame_height, sheetWidth, sheetHeight))
-  table.insert(self.frames, love.graphics.newQuad(372, 1132, self.frame_width, self.frame_height, sheetWidth, sheetHeight))
-  table.insert(self.frames, love.graphics.newQuad(222, 1562, self.frame_width, self.frame_height, sheetWidth, sheetHeight))
-  table.insert(self.frames, love.graphics.newQuad(372, 1132, self.frame_width, self.frame_height, sheetWidth, sheetHeight))
+  table.insert(self.frames, love.graphics.newQuad(330, 1371, frame_width, frame_height, sheetWidth, sheetHeight))
+  table.insert(self.frames, love.graphics.newQuad(372, 1132, frame_width, frame_height, sheetWidth, sheetHeight))
+  table.insert(self.frames, love.graphics.newQuad(222, 1562, frame_width, frame_height, sheetWidth, sheetHeight))
+  table.insert(self.frames, love.graphics.newQuad(372, 1132, frame_width, frame_height, sheetWidth, sheetHeight))
   self.currentFrame = 1
   self.animationSpeed = 8
   
@@ -42,10 +40,8 @@ function player:init(x, y, explosion)
     return {x = -100,y = -50}
   end
   
-  self.inControlStart = {x = self.startX, y = self.startY}
-  
-  
-  
+  self.inControlStart = {x = x, y = y}
+    
   self.controlChange = function(newState)
     self.inControl = newState
   end
@@ -61,7 +57,7 @@ function player:init(x, y, explosion)
   
   
   -- Physics Info
-  self.rect = HC.rectangle(self.pos.x,self.pos.y,self.frame_width * self.scale ,self.frame_height * self.scale)
+  self.rect = HC.rectangle(self.pos.x,self.pos.y,frame_width * self.scale ,frame_height * self.scale)
   
   -- Particle System
   local img = love.graphics.newImage("assets/whitePuff06.png")
@@ -79,7 +75,7 @@ function player:init(x, y, explosion)
   self.explosion = explosion
   
   -- Init Class
-  Entity.init(self, x, y, self.frame_width, self.frame_height)
+  Entity.init(self, x, y, frame_width, frame_height)
 end
 
 
@@ -125,6 +121,20 @@ function player:update(dt)
         self.rot = 0
       end
     end
+    
+    --Update Physics
+    self.rect:moveTo(self.pos.x, self.pos.y)
+    local collisions = HC.collisions(self.rect)
+    --Test Collisions    
+    for shape, delta in pairs(collisions) do
+        self.aliveChange(false)
+        self.controlChange(false)
+        self.explosion:boom(self.pos.x,self.pos.y)
+        self.pos = self.offScreenStart()
+        self.rot = 0
+        break
+    end
+    
   end
 
   --if visible and alive
@@ -137,21 +147,12 @@ function player:update(dt)
       self.currentFrame = 1
     end
     
-    --Update Physics
-    self.rect:moveTo(self.pos.x, self.pos.y)
-    local collisions = HC.collisions(self.rect)
-    --Test Collisions    
-    for shape, delta in pairs(collisions) do
-        self.aliveChange(false)
-        self.controlChange(false)
-        self.explosion:boom(self.pos.x,self.pos.y)
-        self.pos = self.offScreenStart()
-        break
-    end
     
---    while #text > 40 do
---      table.remove(text, 1)
---    end
+    --    while #text > 40 do
+    --      table.remove(text, 1)
+    --    end
+
+
     -- Update Particles
     
     self.exhaust:moveTo(self.pos.x, self.pos.y)

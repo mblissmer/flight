@@ -57,7 +57,7 @@ function player:init(x, y, explosion)
   
   
   -- Physics Info
-  self.rect = HC.rectangle(self.pos.x,self.pos.y,frame_width * self.scale ,frame_height * self.scale)
+  self.rect = HC.rectangle(self.pos.x, self.pos.y, frame_width * self.scale, frame_height * self.scale)
   
   -- Particle System
   local img = love.graphics.newImage("assets/whitePuff06.png")
@@ -75,7 +75,7 @@ function player:init(x, y, explosion)
   self.explosion = explosion
   
   -- Init Class
-  Entity.init(self, x, y, frame_width, frame_height)
+  Entity:init(x, y, frame_width, frame_height)
 end
 
 

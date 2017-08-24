@@ -5,10 +5,14 @@ local Objects = {
 
 function Objects:enter()
   self.updateList = {}
+  self.layers = 5
+  for i=1,self.layers do
+    table.insert(self.updateList, {})
+  end
 end
 
-function Objects:add(object)
-  table.insert(self.updateList, object)
+function Objects:add(object, layer)
+  table.insert(self.updateList[layer], object)
 end
 
 function Objects:addMany(objects)
@@ -31,14 +35,18 @@ function Objects:removeAt(index)
 end
 
 function Objects:draw()
-  for i, o in ipairs(self.updateList) do
-    o:draw(i)
+  for i, l in ipairs(self.updateList) do
+    for n, o in ipairs(self.updateList[i]) do
+      o:draw()
+    end
   end
 end
 
 function Objects:update(dt)
-  for i, o in ipairs(self.updateList) do
-    o:update(dt, i)
+  for i, l in ipairs(self.updateList) do
+    for n, o in ipairs(self.updateList[i]) do
+      o:update(dt)
+    end
   end
 end
 

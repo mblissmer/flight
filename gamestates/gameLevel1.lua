@@ -2,24 +2,26 @@
 Gamestate = require 'libs.hump.gamestate'
 
 UpdateList = require 'utils.UpdateList'
-local Backgrounds = require 'groups.Backgrounds'
-local Enemies = require 'groups.Enemies'
+local Backgrounds = require 'controllers.Backgrounds'
+local Enemies = require 'controllers.Enemies'
+local Particles = require 'controllers.Particles'
 
 local gameLevel1 = {}
 
 local Player = require 'entities.player'
-local Enemy = require 'entities.enemy'
-local Explosion = require 'entities.explosion'
 
 function gameLevel1:enter()
   UpdateList:enter()
   Backgrounds:enter(self:createBackgroundsTable())
   Enemies:enter(self:createEnemyList())
---  local enemy = Enemy(200,200)
-  local exp = Explosion(0,0)
   
   local player = Player(100, 50, exp)
-  UpdateList:addMany({Backgrounds, player, Enemies, exp})
+  UpdateList:add(Backgrounds,1)
+  UpdateList:add(player,2)
+  UpdateList:add(Enemies,2)
+  
+  -- Do particles last so they end up on top of layers visually
+  particleController = Particles()
 end
 
 function gameLevel1:update(dt)
@@ -32,19 +34,14 @@ end
 
 function gameLevel1:createBackgroundsTable()
   local bgtable = {}
-  local nearHeightTable = {30,30,30,40,60,60,40,40,50,30,20,20,20,40,60,30}
-  local near = {x=0,y=screenHeight-71,w=799,h=71,quadX=0,quadY=0,speed=200,colColWidth=50,colsHeightTable=nearHeightTable}
-  local far = {x=0,y=0,w=799,h=480,quadX=0,quadY=355,speed=40}
-  table.insert(bgtable, far)
-  table.insert(bgtable, near)
+  table.insert(bgtable, require('entities.bgFar'))
+  table.insert(bgtable, require('entities.bgNear'))
   return bgtable
 end
 
 function gameLevel1:createEnemyList()
   local enemyTable = {}
-  local enemy1anim = {{304,1967},{330,1298},{330,1225},{330,1298}}
-  local enemy1 = {x=200,y=200,w=88,h=73,scale=0.5,speed=20,animTable=enemy1anim, animSpeed=8}
-  -- enemy1(en.x, en.y, en.w, en.h, en.scale, en.speed, en.animTable, en.animSpeed)
+  table.insert(enemyTable, require('entities.enemy1'))
   return enemyTable
 end
 

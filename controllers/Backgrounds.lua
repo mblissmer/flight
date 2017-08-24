@@ -1,4 +1,4 @@
-local background = require 'entities.background'
+local background = require 'templates.background'
 
 local Backgrounds = {
   active = true,

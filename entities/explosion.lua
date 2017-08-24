@@ -1,6 +1,6 @@
 
 local Class = require 'libs.hump.class'
-local Entity = require 'entities.Entity'
+local Entity = require 'templates.Entity'
 
 local explosion = Class{
   __includes = Entity

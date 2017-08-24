@@ -1,4 +1,4 @@
-local enemy1 = require 'entities.enemy1'
+local enemy1 = require 'templates.enemyStyle1'
 
 local Enemies = {
   active = true,
@@ -7,9 +7,9 @@ local Enemies = {
 
 function Enemies:enter(etable)
   self.enemyList = {}
-  for i, en in ipairs(etable) do
+  for i, en in pairs(etable) do
     local enemy = enemy1(en.x, en.y, en.w, en.h, en.scale, en.speed, en.animTable, en.animSpeed)
-    table.insert(self.backgroundList, enemy)
+    table.insert(self.enemyList, enemy)
   end
 end
 

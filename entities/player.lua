@@ -1,6 +1,6 @@
 
 local Class = require 'libs.hump.class'
-local Entity = require 'entities.Entity'
+local Entity = require 'templates.Entity'
 local HC = require 'libs.HC'
 local Timer = require 'libs.hump.timer'
 
@@ -10,7 +10,7 @@ local player = Class{
 
 
 local text = {}
-function player:init(x, y, explosion)
+function player:init(x, y)
   -- Properties
   self.inControl = true
   self.isAlive = true
@@ -39,16 +39,13 @@ function player:init(x, y, explosion)
   self.offScreenStart = function()
     return {x = -100,y = -50}
   end
-  
   self.inControlStart = {x = x, y = y}
-    
   self.controlChange = function(newState)
     self.inControl = newState
   end
   self.aliveChange = function(newState)
     self.isAlive = newState
   end
-  
   self.respawnTween = ""
   self.newTween = function()
     self.respawnTween = Timer.new()
@@ -59,20 +56,9 @@ function player:init(x, y, explosion)
   -- Physics Info
   self.rect = HC.rectangle(self.pos.x, self.pos.y, frame_width * self.scale, frame_height * self.scale)
   
-  -- Particle System
-  local img = love.graphics.newImage("assets/whitePuff06.png")
-  self.exhaust = love.graphics.newParticleSystem(img, 32)
-  self.exhaust:setParticleLifetime(1,2)
-  self.exhaust:setSpeed(50,75)
-  self.exhaust:setRotation(0,3)
-  self.exhaust:setSizes(0.01,0.05)
-  self.exhaust:setColors(255,255,255,255,255,255,255,0)
-  self.exhaust:setDirection(3)
-  self.exhaust:setParticleLifetime( 0.25, .5 )
-  self.emitSpeed = .25
-  self.emitTimer = self.emitSpeed
-  
-  self.explosion = explosion
+  -- Exhaust Speed
+  self.exhaustSpeed = .25
+  self.exhaustTimer = 0
   
   -- Init Class
   Entity:init(x, y, frame_width, frame_height)
@@ -126,13 +112,16 @@ function player:update(dt)
     self.rect:moveTo(self.pos.x, self.pos.y)
     local collisions = HC.collisions(self.rect)
     --Test Collisions    
-    for shape, delta in pairs(collisions) do
-        self.aliveChange(false)
-        self.controlChange(false)
-        self.explosion:boom(self.pos.x,self.pos.y)
-        self.pos = self.offScreenStart()
-        self.rot = 0
-        break
+    for other, delta in pairs(collisions) do
+      if other.name == "enemy" then
+        love.graphics.setColor(255,0,0)
+      end
+      self.aliveChange(false)
+      self.controlChange(false)
+      particleController:emit("playerDeath",10,self.pos.x,self.pos.y)
+      self.pos = self.offScreenStart()
+      self.rot = 0
+      break
     end
     
   end
@@ -155,17 +144,18 @@ function player:update(dt)
 
     -- Update Particles
     
-    self.exhaust:moveTo(self.pos.x, self.pos.y)
-    self.emitTimer = self.emitTimer + dt
-    if self.emitTimer >= self.emitSpeed then
-      self.exhaust:emit(5)
-      self.emitTimer = 0
+--    self.exhaust:moveTo(self.pos.x, self.pos.y)
+    self.exhaustTimer = self.exhaustTimer + dt
+    if self.exhaustTimer >= self.exhaustSpeed then
+      particleController:emit("engineNormal",5,self.pos.x,self.pos.y)
+--      self.exhaust:emit(5)
+      self.exhaustTimer = 0
     end
     
   end
   
-  -- HAPPENS REGARDLESS
-  self.exhaust:update(dt)
+--  -- HAPPENS REGARDLESS
+--  self.exhaust:update(dt)
   
 --  text[#text+1] = string.format("End of update. XY: %.0f, %.0f",self.pos.x, self.pos.y)
 end
@@ -174,7 +164,7 @@ end
 
 function player:draw()
   if self.isAlive then
-    love.graphics.draw(self.exhaust)
+--    love.graphics.draw(self.exhaust)
     
     love.graphics.draw(spritesheet, self.frames[math.floor(self.currentFrame)], self.pos.x, self.pos.y, self.rot, self.scale, self.scale, self.xOriginOffset, self.yOriginOffset)
 --    for i = 1,#text do

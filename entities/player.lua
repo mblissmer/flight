@@ -9,7 +9,7 @@ local player = Class{
 }
 
 
-local text = {}
+
 function player:init(x, y)
   -- Properties
   self.inControl = true
@@ -20,10 +20,10 @@ function player:init(x, y)
   self.yOriginOffset = frame_height / 2
   self.pos = {x = x, y = y}
   self.rot = 0
-  self.maxRot = .2
+  self.maxRot = 0.2
   self.rotSpeed = 5
-  self.rotTolerance = .1
-  self.scale = .5
+  self.rotTolerance = 0.1
+  self.scale = 0.5
   self.moveSpeed = 300
   
   -- Animation Info
@@ -54,7 +54,12 @@ function player:init(x, y)
   
   
   -- Physics Info
-  self.rect = HC.rectangle(self.pos.x, self.pos.y, frame_width * self.scale, frame_height * self.scale)
+  local physScale = 0.5
+  self.rect = HC.rectangle(
+    self.pos.x, 
+    self.pos.y, 
+    frame_width * self.scale * physScale, 
+    frame_height * self.scale * physScale)
   
   -- Exhaust Speed
   self.exhaustSpeed = .25
@@ -135,12 +140,6 @@ function player:update(dt)
     if self.currentFrame >= table.getn(self.frames)+1 then
       self.currentFrame = 1
     end
-    
-    
-    --    while #text > 40 do
-    --      table.remove(text, 1)
-    --    end
-
 
     -- Update Particles
     
@@ -156,8 +155,7 @@ function player:update(dt)
   
 --  -- HAPPENS REGARDLESS
 --  self.exhaust:update(dt)
-  
---  text[#text+1] = string.format("End of update. XY: %.0f, %.0f",self.pos.x, self.pos.y)
+
 end
 
 
@@ -167,11 +165,10 @@ function player:draw()
 --    love.graphics.draw(self.exhaust)
     
     love.graphics.draw(spritesheet, self.frames[math.floor(self.currentFrame)], self.pos.x, self.pos.y, self.rot, self.scale, self.scale, self.xOriginOffset, self.yOriginOffset)
---    for i = 1,#text do
---      love.graphics.setColor(0,0,0, 255 - (i-1) * 6)
---      love.graphics.print(text[#text - (i-1)], 10, i * 15)
---    end
-    love.graphics.setColor(255,255,255)
+--    
+--    love.graphics.setColor(255,0,0)
+--    self.rect:draw('line')
+--    love.graphics.setColor(255,255,255)
   end
 end
 

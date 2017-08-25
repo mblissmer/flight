@@ -5,9 +5,9 @@ local particleSystem = Class{
   __includes = Entity
 }
 
-function particleSystem:init(table)
-  self.ps = table.ps
-  self.name = table.name
+function particleSystem:init(pTable)
+  self.ps = pTable.ps
+  self.name = pTable.name
   Entity.init(self,0,0,1,1)
 end
 

@@ -15,9 +15,9 @@ function love.load(arg)
   sheetWidth = spritesheet:getWidth()
   sheetHeight = spritesheet:getHeight()
   screenHeight = love.graphics.getHeight()
+  screenWidth = love.graphics.getWidth()
   Gamestate.registerEvents()
   Gamestate.switch(gameLevel1)
-  testnumber1 = sign(12)
 end
 
 function love.keypressed(key)

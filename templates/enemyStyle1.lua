@@ -21,7 +21,12 @@ function enemy1:init(eTable)
   self.xOriginOffset = eTable.w / 2
   self.yOriginOffset = eTable.h / 2  
   self.active = false
+  
+  local n = math.random(0,1)
   self.moveUp = true
+  if n < 0.5 then
+    self.moveUp = false
+  end
   
   
   -- Animation

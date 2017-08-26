@@ -34,7 +34,7 @@ function gameLevel1:update(dt)
   while #text > 40 do
     table.remove(text, 1)
   end
-  text[#text+1] = string.format("Enemy Count: %s",#enemyController.enemyList.e1List )
+  text[#text+1] = string.format("Enemy Count: %s, %s",#enemyController.yellowPlane.list, #enemyController.redPlane.list )
 end
 
 function gameLevel1:draw()

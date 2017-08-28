@@ -2,7 +2,7 @@
 Gamestate = require 'libs.hump.gamestate'
 
 -- Game States
---local mainMenu = require 'gamestates.mainmenu'
+local mainMenu = require 'gamestates.mainmenu'
 local gameLevel1 = require 'gamestates.gameLevel1'
 local pause = require 'gamestates.pause'
 
@@ -17,7 +17,13 @@ function love.load(arg)
   screenHeight = love.graphics.getHeight()
   screenWidth = love.graphics.getWidth()
   Gamestate.registerEvents()
-  Gamestate.switch(gameLevel1)
+  Gamestate.switch(mainMenu)
+end
+
+function switchGamestates(state)
+  if state == "gameLevel1" then
+    Gamestate.switch(gameLevel1)
+  end
 end
 
 function love.keypressed(key)

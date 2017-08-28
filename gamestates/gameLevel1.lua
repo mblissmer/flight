@@ -12,6 +12,9 @@ local gameLevel1 = {}
 
 local Player = require 'entities.player'
 
+local src1 = love.audio.newSource('friends.mp3')
+src1:setVolume(0.5)
+
 local text = {}
 
 function gameLevel1:enter()
@@ -25,6 +28,8 @@ function gameLevel1:enter()
   
   -- Do particles last so they end up on top of layers visually
   particleController = Particles()
+  
+  src1:play()
 end
 
 function gameLevel1:update(dt)
@@ -34,7 +39,8 @@ function gameLevel1:update(dt)
   while #text > 40 do
     table.remove(text, 1)
   end
-  text[#text+1] = string.format("Enemy Count: %s, %s",#enemyController.yellowPlane.list, #enemyController.redPlane.list )
+--  text[#text+1] = string.format("Enemy Count: %s, %s",#enemyController.yellowPlane.list, #enemyController.redPlane.list )
+  text[#text+1] = string.format("Audio Position: %.2f",src1:tell("samples"))
 end
 
 function gameLevel1:draw()

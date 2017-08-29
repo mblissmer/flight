@@ -1,29 +1,15 @@
-local background = require 'templates.background'
+local BgTemplate = require 'templates.background'
+local Class = require 'libs.hump.class'
 
-local Backgrounds = {
-  active = true,
-  backgroundList = {}
+local Backgrounds = Class{
 }
 
-function Backgrounds:enter(bgtable)
+function Backgrounds:init()
   self.backgroundList = {}
-  for i, bg in ipairs(bgtable) do
-    local back = background(bg.x, bg.y, bg.w, bg.h, bg.quadX, bg.quadY, bg.speed, bg.colColWidth, bg.colsHeightTable)
-    table.insert(self.backgroundList, back)
-  end
-  
-end
-
-function Backgrounds:draw()
-  for i, b in ipairs(self.backgroundList) do
-    b:draw(i)
-  end
-end
-
-function Backgrounds:update(dt)
-  for i, b in ipairs(self.backgroundList) do
-    b:update(dt, i)
-  end
+  local bg1 = BgTemplate(require('entities.bgFar'))
+  local bg2 = BgTemplate(require('entities.bgNear'))
+  UpdateList:add(bg1,1)
+  UpdateList:add(bg2,1)
 end
 
 return Backgrounds

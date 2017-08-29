@@ -20,7 +20,7 @@ end
 function mainMenu:update(dt)
   suit.layout:reset(50,50)
   suit.layout:padding(20,20)
-  suit.Label("Helicopter Game!", {align="left"},suit.layout:row(200,30))
+  suit.Label("Plane Game!", {align="left"},suit.layout:row(200,30))
   if suit.Button("New Game", suit.layout:row()).hit then
     switchGamestates("gameLevel1")
   end

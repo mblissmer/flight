@@ -1,7 +1,7 @@
 
 local Class = require 'libs.hump.class'
 local Entity = require 'templates.Entity'
-local HC = require 'libs.HC'
+local HC = require 'libs.hc'
 local Timer = require 'libs.hump.timer'
 
 local player = Class{
@@ -52,14 +52,17 @@ function player:init(x, y)
     self.respawnTween:tween(2, self.pos, {x = self.inControlStart.x, y = self.inControlStart.y}, 'linear', self.controlChange)
   end
   
-  
   -- Physics Info
-  local physScale = 0.5
-  self.rect = HC.rectangle(
+  local physScale = 0.2
+--  self.phys = HC.rectangle(
+--    self.pos.x, 
+--    self.pos.y, 
+--    frame_width * self.scale * physScale, 
+--    frame_height * self.scale * physScale)
+  self.phys = HC.circle(
     self.pos.x, 
     self.pos.y, 
-    frame_width * self.scale * physScale, 
-    frame_height * self.scale * physScale)
+    frame_width * physScale)
   
   -- Exhaust Speed
   self.exhaustSpeed = .25
@@ -90,11 +93,11 @@ function player:update(dt)
   --if controlling character
   -- Movement
   if self.inControl then
-    if love.keyboard.isDown("left", "a") and self.pos.x > math.ceil(self.xOriginOffset * self.scale) then
-      self.pos.x = self.pos.x - self.moveSpeed * dt
-    elseif love.keyboard.isDown("right", "d") and self.pos.x < love.graphics.getWidth( ) - math.ceil(self.xOriginOffset * self.scale) then
-      self.pos.x = self.pos.x + self.moveSpeed * dt
-    end
+--    if love.keyboard.isDown("left", "a") and self.pos.x > math.ceil(self.xOriginOffset * self.scale) then
+--      self.pos.x = self.pos.x - self.moveSpeed * dt
+--    elseif love.keyboard.isDown("right", "d") and self.pos.x < love.graphics.getWidth( ) - math.ceil(self.xOriginOffset * self.scale) then
+--      self.pos.x = self.pos.x + self.moveSpeed * dt
+--    end
     
     if love.keyboard.isDown("up", "w") and self.pos.y > math.ceil(self.yOriginOffset * self.scale) then
       self.pos.y = self.pos.y - self.moveSpeed * dt
@@ -114,18 +117,20 @@ function player:update(dt)
     end
     
     --Update Physics
-    self.rect:moveTo(self.pos.x, self.pos.y)
-    local collisions = HC.collisions(self.rect)
+    self.phys:moveTo(self.pos.x, self.pos.y)
+    local collisions = HC.collisions(self.phys)
     --Test Collisions    
     for other, delta in pairs(collisions) do
-      if other.name == "enemy" then
-        love.graphics.setColor(255,0,0)
+      debugtext[#debugtext+1] = string.format("Colliding with: %s",other.name)
+      if other.name == "pickup1" then
+        other.kill()
+      elseif other.name == "yellowPlane" or other.name == "redPlane" then
+        self:die()
+        other.kill()
+      elseif other.name == "ground" then
+        self:die()
       end
-      self.aliveChange(false)
-      self.controlChange(false)
-      particleController:emit("playerDeath",10,self.pos.x,self.pos.y)
-      self.pos = self.offScreenStart()
-      self.rot = 0
+
       break
     end
     
@@ -147,29 +152,33 @@ function player:update(dt)
     self.exhaustTimer = self.exhaustTimer + dt
     if self.exhaustTimer >= self.exhaustSpeed then
       particleController:emit("engineNormal",5,self.pos.x,self.pos.y)
---      self.exhaust:emit(5)
       self.exhaustTimer = 0
     end
     
   end
-  
---  -- HAPPENS REGARDLESS
---  self.exhaust:update(dt)
 
 end
 
 
 
 function player:draw()
-  if self.isAlive then
---    love.graphics.draw(self.exhaust)
-    
+  if self.isAlive then    
     love.graphics.draw(spritesheet, self.frames[math.floor(self.currentFrame)], self.pos.x, self.pos.y, self.rot, self.scale, self.scale, self.xOriginOffset, self.yOriginOffset)
---    
---    love.graphics.setColor(255,0,0)
---    self.rect:draw('line')
---    love.graphics.setColor(255,255,255)
+  
+  -- Physics debug
+    love.graphics.setColor(255,0,0)
+    self.phys:draw('line')
+    love.graphics.setColor(255,255,255)
   end
+end
+
+function player:die()
+  self.aliveChange(false)
+  self.controlChange(false)
+  particleController:emit("playerDeath",10,self.pos.x,self.pos.y)
+  self.pos = self.offScreenStart()
+  self.rot = 0
+  self.phys:moveTo(self.pos.x, self.pos.y)
 end
 
 function sign(x)

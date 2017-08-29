@@ -8,4 +8,5 @@ bg.quadY=0
 bg.speed=200
 bg.colColWidth=50
 bg.colsHeightTable={30,30,30,40,60,60,40,40,50,30,20,20,20,40,60,30}
+bg.colName="ground"
 return bg

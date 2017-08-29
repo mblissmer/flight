@@ -1,5 +1,5 @@
 local Class = require 'libs.hump.class'
-local style1 = require 'templates.enemyStyle1'
+local style1 = require 'templates.objectStyle1'
 
 local Enemies = Class{
 }

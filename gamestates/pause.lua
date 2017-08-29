@@ -6,15 +6,14 @@ function pause:enter(from)
 end
 
 function pause:draw()
-  local w, h = love.graphics.getWidth(), love.graphics.getHeight()
   -- draw previous screen
   self.from:draw()
 
   -- overlay with pause message
   love.graphics.setColor(0,0,0, 100)
-  love.graphics.rectangle('fill', 0,0, w, h)
+  love.graphics.rectangle('fill', 0,0, screenWidth, screenHeight)
   love.graphics.setColor(255,255,255)
-  love.graphics.printf('PAUSE', 0, h/2, w, 'center')
+  love.graphics.printf('PAUSE', 0, screenHeight/2, screenWidth, 'center')
 end
 
 function pause:keypressed(key)

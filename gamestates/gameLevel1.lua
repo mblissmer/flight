@@ -12,10 +12,13 @@ local gameLevel1 = {}
 
 local Player = require 'entities.player'
 
-local src1 = love.audio.newSource('friends.mp3')
-src1:setVolume(0.5)
+local src1 = love.audio.newSource('assets/seafloor.mp3')
 
 local text = {}
+
+local times = {}
+local timefile = io.open("output.csv","w")
+io.input(timefile)
 
 function gameLevel1:enter()
   UpdateList:enter()
@@ -52,6 +55,14 @@ function gameLevel1:draw()
     end
   love.graphics.setColor(255,255,255)
   
+end
+
+function gameLevel1:leave()
+  st = ""
+  for i, t in pairs(times) do
+    st = st .. t .. ","
+  end
+  io.close(timefile)
 end
 
 function gameLevel1:createBackgroundsTable()

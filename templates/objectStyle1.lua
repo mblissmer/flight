@@ -124,9 +124,9 @@ end
 function object1:draw()
   if self.active then
     love.graphics.draw(spritesheet, self.frames[math.floor(self.currentFrame)], self.x, self.y, self.rot, self.scaleX, self.scaleY, self.xOriginOffset, self.yOriginOffset) 
-    love.graphics.setColor(255,0,0)
-    self.phys:draw('line')
-    love.graphics.setColor(255,255,255)
+--    love.graphics.setColor(255,0,0)
+--    self.phys:draw('line')
+--    love.graphics.setColor(255,255,255)
   end
 end
 

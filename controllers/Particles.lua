@@ -1,6 +1,7 @@
 
 local Class = require 'libs.hump.class'
 local Particles = require 'templates.particleObject'
+local UpdateList = require 'utils.UpdateList'
 
 local particleController = Class{
 }

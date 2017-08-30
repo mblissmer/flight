@@ -69,13 +69,13 @@ function background:draw()
   love.graphics.draw(spritesheet, self.img, self.x, self.y)
   love.graphics.draw(spritesheet, self.img, self.x1, self.y)
   
-  if self.collisions then
-    love.graphics.setColor(255,0,0)
-    for i = 1, self.colCount do
-      self.cols[i]:draw('line')
-    end
-    love.graphics.setColor(255,255,255)
-  end
+--  if self.collisions then
+--    love.graphics.setColor(255,0,0)
+--    for i = 1, self.colCount do
+--      self.cols[i]:draw('line')
+--    end
+--    love.graphics.setColor(255,255,255)
+--  end
 end
 
 return background

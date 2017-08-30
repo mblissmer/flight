@@ -1,5 +1,6 @@
 local BgTemplate = require 'templates.background'
 local Class = require 'libs.hump.class'
+local UpdateList = require 'utils.UpdateList'
 
 local Backgrounds = Class{
 }

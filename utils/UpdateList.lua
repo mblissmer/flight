@@ -1,6 +1,6 @@
 local Objects = {
   active = true,
-  updateList = {}
+--  updateList = {}
 }
 
 function Objects:enter()
@@ -28,6 +28,10 @@ function Objects:remove(object)
       return
     end
   end
+end
+
+function Objects:removeAll()
+  self.updateList = nil
 end
 
 function Objects:removeAt(index)

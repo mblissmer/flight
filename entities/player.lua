@@ -2,7 +2,6 @@
 local Class = require 'libs.hump.class'
 local Entity = require 'templates.Entity'
 local HC = require 'libs.hc'
-local Timer = require 'libs.hump.timer'
 
 local player = Class{
   __includes = Entity
@@ -121,14 +120,17 @@ function player:update(dt)
     local collisions = HC.collisions(self.phys)
     --Test Collisions    
     for other, delta in pairs(collisions) do
-      debugtext[#debugtext+1] = string.format("Colliding with: %s",other.name)
+--      debugtext[#debugtext+1] = string.format("Colliding with: %s",other.name)
       if other.name == "pickup1" then
+        pickupCount = pickupCount + 1
         other.kill()
       elseif other.name == "yellowPlane" or other.name == "redPlane" then
         self:die()
         other.kill()
+        deathCount = deathCount + 1
       elseif other.name == "ground" then
         self:die()
+        deathCount = deathCount + 1
       end
 
       break
@@ -166,9 +168,9 @@ function player:draw()
     love.graphics.draw(spritesheet, self.frames[math.floor(self.currentFrame)], self.pos.x, self.pos.y, self.rot, self.scale, self.scale, self.xOriginOffset, self.yOriginOffset)
   
   -- Physics debug
-    love.graphics.setColor(255,0,0)
-    self.phys:draw('line')
-    love.graphics.setColor(255,255,255)
+--    love.graphics.setColor(255,0,0)
+--    self.phys:draw('line')
+--    love.graphics.setColor(255,255,255)
   end
 end
 

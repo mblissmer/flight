@@ -2,7 +2,7 @@
 Gamestate = require 'libs.hump.gamestate'
 UpdateList = require 'utils.UpdateList'
 Timer = require "libs.hump.timer"
-suit = require 'libs.suit'
+require 'libs.gooi'
 
 local Backgrounds = require 'controllers.Backgrounds'
 local Enemies = require 'controllers.Enemies'
@@ -19,6 +19,9 @@ debugtext = {}
 
 local times = {}
 
+pickupCount = 0
+deathCount = 0
+
 
 
 function gameLevel1:enter()
@@ -34,19 +37,43 @@ function gameLevel1:enter()
   particleController = Particles()
   
   src1:play()
+      
+  local panelGrid = gooi.newPanel({
+    x=screenWidth-100, 
+    y=0, 
+    w=100, 
+    h=50, 
+    layout="grid 2x2"})
+  deathCountGui = gooi.newLabel(
+    {text = "0"})
+    :fg({0,0,0})
+  pickupCountGui = gooi.newLabel(
+    {text = "0"})
+    :fg({0,0,0})
+
+	panelGrid:add(
+    gooi.newLabel({text = "Pickups:"}):fg({0,0,0}),
+    pickupCountGui,
+    gooi.newLabel({text = "Deaths:"}):fg({0,0,0}),
+    deathCountGui
+    )
   
+end
+
+function gameLevel1:leave()
+  UpdateList:RemoveAll()
+  gooi.components = {}
 end
 
 function gameLevel1:update(dt)
   UpdateList:update(dt)
   Timer.update(dt)
-  suit.layout:reset(screenWidth-200,50)
-  suit.layout:padding(20,20)
-  suit.Label("Stars Collected", {align="right"},suit.layout:row(100,30))
-  suit.Label("2", suit.layout:col())
-  suit.Label("Deaths", {align="right",color={255,0,0}},suit.layout:row(100,30))
-  suit.Label("2", suit.layout:col())
-    
+  
+  deathCountGui:setText(deathCount)
+  pickupCountGui:setText(pickupCount)
+  
+  gooi.update(dt)
+  
   -- Debug Info
   while #debugtext > 40 do
     table.remove(debugtext, 1)
@@ -57,13 +84,12 @@ end
 
 function gameLevel1:draw()
   UpdateList:draw()
-  suit.draw()
   for i = 1,#debugtext do
       love.graphics.setColor(0,0,0, 255 - (i-1) * 6)
       love.graphics.print(debugtext[#debugtext - (i-1)], 10, i * 15)
     end
   love.graphics.setColor(255,255,255)
-  
+  gooi.draw()
 end
 
 function gameLevel1:quit()
@@ -82,13 +108,6 @@ function gameLevel1:keypressed(key)
   if key == "space" then
     table.insert(times, src1:tell("samples"))
   end
-end
-
-function gameLevel1:createBackgroundsTable()
-  local bgtable = {}
-  table.insert(bgtable, require('entities.bgFar'))
-  table.insert(bgtable, require('entities.bgNear'))
-  return bgtable
 end
 
 return gameLevel1

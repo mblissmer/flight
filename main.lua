@@ -14,8 +14,8 @@ function love.load(arg)
   spritesheet = love.graphics.newImage("assets/sheet.png")
   sheetWidth = spritesheet:getWidth()
   sheetHeight = spritesheet:getHeight()
-  screenHeight = love.graphics.getHeight()
   screenWidth = love.graphics.getWidth()
+  screenHeight = love.graphics.getHeight()
   Gamestate.registerEvents()
   Gamestate.switch(mainMenu)
 end
@@ -31,11 +31,7 @@ function love.keypressed(key)
     love.event.push("quit")
   end
   if key == "m" then
-  	if Gamestate.current() == mainMenu then
-  		Gamestate.switch(gameLevel1)
-  	else
-  		Gamestate.switch(mainMenu)
-  	end
+    Gamestate.switch(mainMenu)
   end
   if key == "p" and Gamestate.current() ~= pause then
   	Gamestate.push(pause)

@@ -4,7 +4,7 @@ local style1 = require 'templates.objectStyle1'
 local Enemies = Class{
 }
 
-function Enemies:init()
+function Enemies:init(ul)
   self.yellowPlane = {}
   self.yellowPlane.list = {}
   self.yellowPlane.template = require 'entities.enemy1'
@@ -15,39 +15,28 @@ function Enemies:init()
   self.redPlane.template = require 'entities.enemy2'
   self.redPlane.style = style1
   
-  self:spawnYellowPlane()
-  self:spawnRedPlane()
+  self.updateList = ul
 end
 
 function Enemies:addMore(enemy)
   local en = enemy.style(enemy.template)
   table.insert(enemy.list, en)
-  UpdateList:add(enemy.list[#enemy.list], 2)
+  self.updateList:add(enemy.list[#enemy.list], 2)
   return en
 end
 
-function Enemies:spawnEnemy(enemy)
+function Enemies:spawnEnemy(enemy, y)
   local found = false
   for i,e in pairs(enemy.list) do
     if e.active == false then
-      e:activate()
+      e:activate(y)
       found = true
       break
     end
   end
   if found == false then
-    self:addMore(enemy):activate()
+    self:addMore(enemy):activate(y)
   end
 end
-
-function Enemies:spawnYellowPlane()
-    local t = math.random(0.5,1.1)
-  Timer.after(t, function() self:spawnEnemy(self.yellowPlane) self:spawnYellowPlane() end)
-end
-  
-function Enemies:spawnRedPlane()
-    local t = math.random(2,3)
-  Timer.after(t, function() self:spawnEnemy(self.redPlane) self:spawnRedPlane() end)
-end  
 
 return Enemies

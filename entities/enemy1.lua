@@ -2,7 +2,8 @@ local o = {}
 
 o.w=88
 o.h=73
-o.x=screenWidth + (o.w * 2)
+o.x = screenWidth - 100
+--o.x=screenWidth + (o.w * 2)
 o.y={o.h,screenHeight - 100}
 o.scaleX=-0.5
 o.scaleY=0.5

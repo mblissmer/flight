@@ -1,4 +1,4 @@
-
+Timer = require "libs.hump.timer"
 Gamestate = require 'libs.hump.gamestate'
 
 -- Game States

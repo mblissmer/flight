@@ -8,12 +8,8 @@ local object1 = Class{
 }
 
 function object1:init(eTable)
-  function self.generateYPos()
-    self.spawnPointY = math.random(eTable.y[1],eTable.y[2])
-  end
-  self.generateYPos()
   --Position, size, origin
-  Entity.init(self, eTable.x, self.spawnPointY, eTable.w, eTable.h)
+  Entity.init(self, eTable.x, 0, eTable.w, eTable.h)
   self.spawnPointX = eTable.x
   self.spawnPointY = self.y
   self.scaleX = eTable.scaleX
@@ -68,10 +64,10 @@ function object1:init(eTable)
   self.yLimit = eTable.yLimit
 end
 
-function object1:activate()
-  self.generateYPos()
+function object1:activate(y)
   self.x = self.spawnPointX
-  self.y = self.spawnPointY
+  self.y = y
+  self.spawnPointY = y
   self.active = true
 end
 

@@ -13,8 +13,17 @@ local newGameBtn
 local exitBtn
 
 
-function mainMenu:init()
-  gooi.newLabel({
+function mainMenu:enter()
+  local frame_width = 87
+  local frame_height = 72
+  xOriginOffset = frame_width / 2
+  yOriginOffset = frame_height / 2
+  table.insert(playerImage, love.graphics.newQuad(330, 1371, frame_width, frame_height, sheetWidth, sheetHeight))
+  table.insert(playerImage, love.graphics.newQuad(372, 1132, frame_width, frame_height, sheetWidth, sheetHeight))
+  table.insert(playerImage, love.graphics.newQuad(222, 1562, frame_width, frame_height, sheetWidth, sheetHeight))
+  table.insert(playerImage, love.graphics.newQuad(372, 1132, frame_width, frame_height, sheetWidth, sheetHeight))
+  
+   gooi.newLabel({
     text = "Plane Game",
     x=0,
     y=150,
@@ -53,25 +62,13 @@ function mainMenu:init()
     w = 100,
     h = 25
 })
-
-  exitBtnSlider = gooi.newSlider({
+    exitBtnSlider = gooi.newSlider({
     value = 0.3,
     x = screenWidth-200-50,
     y = screenHeight/2 + 50,
     w = 100,
     h = 25
 })
-end
-
-function mainMenu:enter()
-  local frame_width = 87
-  local frame_height = 72
-  xOriginOffset = frame_width / 2
-  yOriginOffset = frame_height / 2
-  table.insert(playerImage, love.graphics.newQuad(330, 1371, frame_width, frame_height, sheetWidth, sheetHeight))
-  table.insert(playerImage, love.graphics.newQuad(372, 1132, frame_width, frame_height, sheetWidth, sheetHeight))
-  table.insert(playerImage, love.graphics.newQuad(222, 1562, frame_width, frame_height, sheetWidth, sheetHeight))
-  table.insert(playerImage, love.graphics.newQuad(372, 1132, frame_width, frame_height, sheetWidth, sheetHeight))
   
 end
 

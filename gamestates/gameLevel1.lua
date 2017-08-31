@@ -1,23 +1,26 @@
 
-Gamestate = require 'libs.hump.gamestate'
-UpdateList = require 'utils.UpdateList'
-Timer = require "libs.hump.timer"
+local Gamestate = require 'libs.hump.gamestate'
+local UpdateList = require 'utils.UpdateList'
 require 'libs.gooi'
 
 local Backgrounds = require 'controllers.Backgrounds'
 local Enemies = require 'controllers.Enemies'
 local Particles = require 'controllers.Particles'
 local Pickups = require 'controllers.Pickups'
+local Patterns = require 'controllers.Patterns'
 
 local gameLevel1 = {}
 
 local Player = require 'entities.player'
 
 local src1 = love.audio.newSource('assets/seafloor.mp3')
+local noAudio = 0
+sampleCount = 0
 
 debugtext = {}
 
 local times = {}
+local yPos = 100
 
 pickupCount = 0
 deathCount = 0
@@ -26,15 +29,17 @@ deathCount = 0
 
 function gameLevel1:enter()
   UpdateList:enter()
-  enemyController = Enemies()
-  pickupController = Pickups()
-  backgroundController = Backgrounds()
+  enemyController = Enemies(UpdateList)
+  pickupController = Pickups(UpdateList)
+  backgroundController = Backgrounds(UpdateList)
+  patternController = Patterns(require 'patterns.g1')
   
   local player = Player(100, 50, exp)
   UpdateList:add(player,2)
+  UpdateList:add(patternController,1)
   
   -- Do particles last so they end up on top of layers visually
-  particleController = Particles()
+  particleController = Particles(UpdateList)
   
   src1:play()
       
@@ -61,8 +66,9 @@ function gameLevel1:enter()
 end
 
 function gameLevel1:leave()
-  UpdateList:RemoveAll()
+  UpdateList:removeAll()
   gooi.components = {}
+  Timer.clear()
 end
 
 function gameLevel1:update(dt)
@@ -80,6 +86,10 @@ function gameLevel1:update(dt)
   end
 --  debugtext[#text+1] = string.format("Enemy Count: %s, %s",#enemyController.yellowPlane.list, #enemyController.redPlane.list )
 --  debugtext[#text+1] = string.format("Audio Position: %.2f",src1:tell("samples"))
+  if src1:tell("samples") == 0 then
+    noAudio = noAudio + 44100 * dt
+  end
+  sampleCount = src1:tell("samples") + math.floor(noAudio)
 end
 
 function gameLevel1:draw()
@@ -94,10 +104,13 @@ end
 
 function gameLevel1:quit()
   if times[1] then
-    local timefile = io.open("output/output.csv","w")
+    local timefile = io.open("output/output.txt","w")
     local st = ""
     for i, t in pairs(times) do
-      st = st .. t .. ","
+      for j, e in pairs(t) do
+        st = st .. j .. "=" .. e .. ", "
+      end
+      st = st .. "\n"
     end
     timefile:write(st)
     timefile:close()
@@ -105,8 +118,13 @@ function gameLevel1:quit()
 end
 
 function gameLevel1:keypressed(key)
-  if key == "space" then
-    table.insert(times, src1:tell("samples"))
+  if key == "1" or key == "2" or key == "3" then
+    local samples = src1:tell("samples") + math.floor(noAudio)
+    table.insert(times, {sample=samples,otype=key,y=yPos})
+    yPos = yPos + 111
+    if yPos > screenHeight-100 then
+      yPos = 100
+    end
   end
 end
 

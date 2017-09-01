@@ -23,7 +23,7 @@ function player:init(x, y)
   self.rotSpeed = 5
   self.rotTolerance = 0.1
   self.scale = 0.5
-  self.moveSpeed = 300
+  self.moveSpeed = 1
   
   -- Animation Info
   self.frames = {}
@@ -33,6 +33,21 @@ function player:init(x, y)
   table.insert(self.frames, love.graphics.newQuad(372, 1132, frame_width, frame_height, sheetWidth, sheetHeight))
   self.currentFrame = 1
   self.animationSpeed = 8
+  
+  self.swirlFrames = {}
+    table.insert(self.swirlFrames, love.graphics.newQuad(170, 1996, 39, 37, sheetWidth, sheetHeight))
+  table.insert(self.swirlFrames, love.graphics.newQuad(369, 1444, 39, 37, sheetWidth, sheetHeight))
+  table.insert(self.swirlFrames, love.graphics.newQuad(330, 1444, 39, 37, sheetWidth, sheetHeight))
+  self.swirlCount = 10
+  self.swirlFrame = 1
+  self.swrilAnimSpeed = 8
+  self.swirlScale = 0.2
+  self.swirlPos = {{},{},{},{},{},{},{},{},{},{}}
+  self.swirlX = 0
+  self.swirlY = 0
+  self.swirlRadius = 25
+  self.swirlRadians = 0
+  self.swirlMove = 25
   
   -- Spawn Animation
   self.offScreenStart = function()
@@ -72,11 +87,7 @@ function player:init(x, y)
 end
 
 
-function player:update(dt)
-  
---  text[#text+1] = string.format("Beginning of update. XY: %.0f, %.0f",self.pos.x, self.pos.y)
-  
-  
+function player:update(dt)  
   -- Spawning Cinematic
     if not self.inControl then
       if not self.isAlive then
@@ -86,18 +97,9 @@ function player:update(dt)
     self.respawnTween:update(dt)
     end
   
-  
-  
-  
   --if controlling character
   -- Movement
   if self.inControl then
---    if love.keyboard.isDown("left", "a") and self.pos.x > math.ceil(self.xOriginOffset * self.scale) then
---      self.pos.x = self.pos.x - self.moveSpeed * dt
---    elseif love.keyboard.isDown("right", "d") and self.pos.x < love.graphics.getWidth( ) - math.ceil(self.xOriginOffset * self.scale) then
---      self.pos.x = self.pos.x + self.moveSpeed * dt
---    end
-    
     if love.keyboard.isDown("up", "w") and self.pos.y > math.ceil(self.yOriginOffset * self.scale) then
       self.pos.y = self.pos.y - self.moveSpeed * dt
       if self.rot > -self.maxRot then
@@ -139,24 +141,31 @@ function player:update(dt)
   end
 
   --if visible and alive
-
   if self.isAlive then
-    
     -- Animation
     self.currentFrame = self.currentFrame + self.animationSpeed * dt
     if self.currentFrame >= table.getn(self.frames)+1 then
       self.currentFrame = 1
     end
-
-    -- Update Particles
     
---    self.exhaust:moveTo(self.pos.x, self.pos.y)
+    -- Update Particles
     self.exhaustTimer = self.exhaustTimer + dt
     if self.exhaustTimer >= self.exhaustSpeed then
       particleController:emit("engineNormal",5,self.pos.x,self.pos.y)
       self.exhaustTimer = 0
     end
     
+  end
+  
+  -- Move Swirls
+
+  self.swirlRadians = self.swirlRadians + dt
+  if self.swirlRadians > math.pi*2 then
+    self.swirlRadians = 0
+  end
+  for i = 1,self.swirlCount do
+    self.swirlPos[i].x = self.pos.x + self.swirlRadius * math.cos((self.swirlRadians + 0.628 * i) + dt * self.swirlMove)
+    self.swirlPos[i].y = self.pos.y + self.swirlRadius * math.sin((self.swirlRadians + 0.628 * i) + dt * self.swirlMove)
   end
 
 end
@@ -166,6 +175,11 @@ end
 function player:draw()
   if self.isAlive then    
     love.graphics.draw(spritesheet, self.frames[math.floor(self.currentFrame)], self.pos.x, self.pos.y, self.rot, self.scale, self.scale, self.xOriginOffset, self.yOriginOffset)
+  
+  for i=1, self.swirlCount do
+        love.graphics.draw(spritesheet, self.swirlFrames[math.floor(self.swirlFrame)], self.swirlPos[i].x, self.swirlPos[i].y, 0, self.swirlScale, self.swirlScale)
+  end
+
   
   -- Physics debug
 --    love.graphics.setColor(255,0,0)

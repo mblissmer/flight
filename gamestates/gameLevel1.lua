@@ -1,6 +1,7 @@
 
 local Gamestate = require 'libs.hump.gamestate'
 local UpdateList = require 'utils.UpdateList'
+Camera = require 'libs.hump.camera'
 require 'libs.gooi'
 
 local Backgrounds = require 'controllers.Backgrounds'
@@ -34,7 +35,7 @@ function gameLevel1:enter()
   backgroundController = Backgrounds(UpdateList)
   patternController = Patterns(require 'patterns.g1')
   
-  local player = Player(100, 50, exp)
+  player = Player(100, 50, exp)
   UpdateList:add(player,2)
   UpdateList:add(patternController,1)
   
@@ -63,6 +64,7 @@ function gameLevel1:enter()
     deathCountGui
     )
   
+  camera = Camera()
 end
 
 function gameLevel1:leave()
@@ -80,12 +82,14 @@ function gameLevel1:update(dt)
   
   gooi.update(dt)
   
+--  camera.y = player.pos.y
+
   -- Debug Info
   while #debugtext > 40 do
     table.remove(debugtext, 1)
   end
---  debugtext[#text+1] = string.format("Enemy Count: %s, %s",#enemyController.yellowPlane.list, #enemyController.redPlane.list )
---  debugtext[#text+1] = string.format("Audio Position: %.2f",src1:tell("samples"))
+--  debugtext[#debugtext+1] = string.format("Enemy Count: %s, %s",#enemyController.yellowPlane.list, #enemyController.redPlane.list )
+--  debugtext[#debugtext+1] = string.format("Audio Position: %.2f",src1:tell("samples"))
   if src1:tell("samples") == 0 then
     noAudio = noAudio + 44100 * dt
   end
@@ -93,12 +97,14 @@ function gameLevel1:update(dt)
 end
 
 function gameLevel1:draw()
+  camera:attach()
   UpdateList:draw()
   for i = 1,#debugtext do
       love.graphics.setColor(0,0,0, 255 - (i-1) * 6)
       love.graphics.print(debugtext[#debugtext - (i-1)], 10, i * 15)
     end
   love.graphics.setColor(255,255,255)
+  camera:detach()
   gooi.draw()
 end
 

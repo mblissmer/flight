@@ -13,8 +13,11 @@ function background:init(bgTable)
     bgTable.quadX, bgTable.quadY, 
     bgTable.w, bgTable.h, 
     sheetWidth, sheetHeight)
-  self.x1 = bgTable.x + bgTable.w
   self.moveSpeed  = bgTable.speed
+  self.scale = screenWidth / 1920 * bgTable.scale
+  self.y = screenHeight - bgTable.h * self.scale
+  self.x1 = bgTable.x + bgTable.w * self.scale
+  -- Collisions
   self.collisions = false
   if bgTable.colColWidth then
     self.colWidth = bgTable.colColWidth
@@ -39,12 +42,14 @@ function background:update(dt)
   self.x = self.x - self.moveSpeed * dt
   self.x1 = self.x1 - self.moveSpeed * dt
   
-  if self.x + self.w < 0 then
-    self.x = self.x1 + self.w
+  if self.x + self.w * self.scale < 0 then
+    self.x = self.x1 + self.w * self.scale
   end
-  if self.x1 + self.w < 0 then
-    self.x1 = self.x + self.w
+  if self.x1 + self.w * self.scale < 0 then
+    self.x1 = self.x + self.w * self.scale
   end
+  
+  -- Collisions
   if self.collisions then
     for i = 1, self.colCount do
       local xpos
@@ -66,9 +71,8 @@ function background:update(dt)
 end
 
 function background:draw()
-  love.graphics.draw(spritesheet, self.img, self.x, self.y)
-  love.graphics.draw(spritesheet, self.img, self.x1, self.y)
-  
+  love.graphics.draw(spritesheet, self.img, self.x, self.y, 0, self.scale, self.scale)
+  love.graphics.draw(spritesheet, self.img, self.x1, self.y, 0, self.scale, self.scale)
 --  if self.collisions then
 --    love.graphics.setColor(255,0,0)
 --    for i = 1, self.colCount do

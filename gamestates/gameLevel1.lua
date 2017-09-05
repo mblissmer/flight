@@ -12,7 +12,7 @@ local Patterns = require 'controllers.Patterns'
 
 local gameLevel1 = {}
 
-local Player = require 'entities.player'
+local Player = require 'templates.playerObject'
 
 local src1 = love.audio.newSource('assets/seafloor.mp3')
 local noAudio = 0
@@ -35,7 +35,7 @@ function gameLevel1:enter()
   backgroundController = Backgrounds(UpdateList)
   patternController = Patterns(require 'patterns.g1')
   
-  player = Player(100, 50, exp)
+  player = Player(require 'entities.player')
   UpdateList:add(player,2)
   UpdateList:add(patternController,1)
   

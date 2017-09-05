@@ -14,8 +14,8 @@ function object1:init(eTable)
   self.spawnPointY = self.y
   self.scaleX = eTable.scaleX
   self.scaleY = eTable.scaleY
-  self.xOriginOffset = eTable.w / 2
-  self.yOriginOffset = eTable.h / 2  
+  self.xOriginOffset = eTable.centerX
+  self.yOriginOffset = eTable.centerY  
   self.active = false
   
   
@@ -120,9 +120,9 @@ end
 function object1:draw()
   if self.active then
     love.graphics.draw(spritesheet, self.frames[math.floor(self.currentFrame)], self.x, self.y, self.rot, self.scaleX, self.scaleY, self.xOriginOffset, self.yOriginOffset) 
---    love.graphics.setColor(255,0,0)
---    self.phys:draw('line')
---    love.graphics.setColor(255,255,255)
+    love.graphics.setColor(255,0,0)
+    self.phys:draw('line')
+    love.graphics.setColor(255,255,255)
   end
 end
 

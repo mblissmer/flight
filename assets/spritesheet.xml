@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:adabc0a49740988ee5c0c866a46f2a87:34daf440d995a25983eae6e956d616bf:ef7663426bf705b25566a93aef3a1571$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+pX => x pos of the pivot point (relative to sprite width)
+pY => y pos of the pivot point (relative to sprite height)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+with polygon mode enabled:
+vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
+verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
+triangles  => sprite triangulation, 3 vertex indices per triangle
+-->
+<TextureAtlas imagePath="spritesheet.png" width="1937" height="1655">
+    <sprite n="bg1.png" x="0" y="0" w="1920" h="666" pX="0.5" pY="0.5"/>
+    <sprite n="bg2.png" x="0" y="670" w="1920" h="666" pX="0.5" pY="0.5"/>
+    <sprite n="blueShip1.png" x="0" y="1340" w="159" h="108" pX="0.5" pY="0.5"/>
+    <sprite n="blueShip2.png" x="163" y="1340" w="159" h="108" pX="0.5" pY="0.5"/>
+    <sprite n="blueShip3.png" x="326" y="1340" w="159" h="108" pX="0.5" pY="0.5"/>
+    <sprite n="player1.png" x="489" y="1340" w="130" h="62" pX="0.5" pY="0.5"/>
+    <sprite n="player2.png" x="623" y="1340" w="130" h="62" pX="0.5" pY="0.5"/>
+    <sprite n="player3.png" x="757" y="1340" w="130" h="62" pX="0.5" pY="0.5"/>
+    <sprite n="redShip1.png" x="891" y="1340" w="159" h="108" pX="0.5" pY="0.5"/>
+    <sprite n="redShip2.png" x="1054" y="1340" w="159" h="108" pX="0.5" pY="0.5"/>
+    <sprite n="redShip3.png" x="1217" y="1340" w="159" h="108" pX="0.5" pY="0.5"/>
+    <sprite n="shield1.png" x="1380" y="1340" w="183" h="183" pX="0.5" pY="0.5"/>
+    <sprite n="shield2.png" x="1567" y="1340" w="183" h="183" pX="0.5" pY="0.5"/>
+    <sprite n="shield3.png" x="1754" y="1340" w="183" h="183" pX="0.5" pY="0.5"/>
+    <sprite n="star1.png" x="0" y="1527" w="128" h="128" pX="0.5" pY="0.5"/>
+    <sprite n="star2.png" x="132" y="1527" w="128" h="128" pX="0.5" pY="0.5"/>
+    <sprite n="star3.png" x="264" y="1527" w="128" h="128" pX="0.5" pY="0.5"/>
+    <sprite n="star4.png" x="396" y="1527" w="128" h="128" pX="0.5" pY="0.5"/>
+</TextureAtlas>

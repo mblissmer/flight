@@ -14,14 +14,16 @@ local exitBtn
 
 
 function mainMenu:enter()
-  local frame_width = 87
-  local frame_height = 72
-  xOriginOffset = frame_width / 2
-  yOriginOffset = frame_height / 2
-  table.insert(playerImage, love.graphics.newQuad(330, 1371, frame_width, frame_height, sheetWidth, sheetHeight))
-  table.insert(playerImage, love.graphics.newQuad(372, 1132, frame_width, frame_height, sheetWidth, sheetHeight))
-  table.insert(playerImage, love.graphics.newQuad(222, 1562, frame_width, frame_height, sheetWidth, sheetHeight))
-  table.insert(playerImage, love.graphics.newQuad(372, 1132, frame_width, frame_height, sheetWidth, sheetHeight))
+  -- Create player sprite
+  playerImage = {}
+  local pTable = require 'entities.player'
+  for i=1,table.getn(pTable.animTable) do
+    local qx = pTable.animTable[i][1]
+    local qy = pTable.animTable[i][2]
+    table.insert(playerImage, love.graphics.newQuad(qx, qy, pTable.w, pTable.h, sheetWidth, sheetHeight))
+  end
+  xOriginOffset = pTable.w/2
+  yOriginOffset = pTable.h/2
   
    gooi.newLabel({
     text = "Plane Game",

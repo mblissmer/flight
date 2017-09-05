@@ -11,7 +11,7 @@ function love.load(arg)
   if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 
-  spritesheet = love.graphics.newImage("assets/sheet.png")
+  spritesheet = love.graphics.newImage("assets/spritesheet.png")
   sheetWidth = spritesheet:getWidth()
   sheetHeight = spritesheet:getHeight()
   screenWidth = love.graphics.getWidth()

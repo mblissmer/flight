@@ -18,23 +18,16 @@ function player:init(pTable)
   self.xOriginOffset = pTable.w / 2
   self.yOriginOffset = pTable.h / 2
   self.rot = 0
-  self.pos = {self.x,self.y}
   self.maxRot = pTable.maxRot
   self.rotSpeed = pTable.rotSpeed
   self.rotTolerance = pTable.rotTolerance
   self.scaleX = pTable.scaleX
   self.scaleY = pTable.scaleY
   self.moveSpeed = pTable.moveSpeed
+  self.img = love.graphics.newQuad(pTable.quadX, pTable.quadY, pTable.w, pTable.h, sheetWidth, sheetHeight)
   
   -- Animation Info
-  self.frames = {}
-  for i=1,table.getn(pTable.animTable) do
-    local qx = pTable.animTable[i][1]
-    local qy = pTable.animTable[i][2]
-    table.insert(self.frames, love.graphics.newQuad(qx, qy, pTable.w, pTable.h, sheetWidth, sheetHeight))
-  end
-  self.currentFrame = 1
-  self.animationSpeed = pTable.animSpeed
+  self.anims = pTable.anims
   
 --  self.swirlFrames = {}
 --    table.insert(self.swirlFrames, love.graphics.newQuad(170, 1996, 39, 37, sheetWidth, sheetHeight))
@@ -65,7 +58,7 @@ function player:init(pTable)
   self.respawnTween = ""
   self.newTween = function()
     self.respawnTween = Timer.new()
-    self.respawnTween:tween(2, self.pos, self.inControlStart, 'linear', self.controlChange)
+    self.respawnTween:tween(2, {self.x, self.y}, self.inControlStart, 'linear', self.controlChange)
   end
   
   -- Physics Info
@@ -100,19 +93,9 @@ function player:update(dt)
   if self.inControl then
     if love.keyboard.isDown("up", "w") and self.y > math.ceil(self.yOriginOffset * self.scaleY) then
       self.y = self.y - self.moveSpeed * dt
-      if self.rot > -self.maxRot then
-        self.rot = self.rot - dt * self.rotSpeed
-      end
     elseif love.keyboard.isDown("down", "s") and self.y < love.graphics.getHeight( ) - math.ceil(self.yOriginOffset * self.scaleY) then
       self.y = self.y + self.moveSpeed * dt
-      if self.rot < self.maxRot then
-        self.rot = self.rot + dt * self.rotSpeed
-      end
-    elseif self.rot ~= 0 then
-      self.rot = self.rot + dt * -sign(self.rot)
-      if math.abs(self.rot) < self.rotTolerance then
-        self.rot = 0
-      end
+
     end
     
     --Update Physics
@@ -140,11 +123,8 @@ function player:update(dt)
 
   --if visible and alive
   if self.isAlive then
-    -- Animation
-    self.currentFrame = self.currentFrame + self.animationSpeed * dt
-    if self.currentFrame >= table.getn(self.frames)+1 then
-      self.currentFrame = 1
-    end
+    -- Flame
+--    self.anims["move"](self.x,self.y,dt)
     
   end
   
@@ -165,17 +145,20 @@ end
 
 function player:draw()
   if self.isAlive then    
-    love.graphics.draw(spritesheet, self.frames[math.floor(self.currentFrame)], self.x, self.y, self.rot, self.scaleX, self.scaleY, self.xOriginOffset, self.yOriginOffset)
-  
+    for i=1, table.getn(self.anims) do
+--      self.anims[i]["draw"]()
+    end
+    
+    love.graphics.draw(spritesheet, self.img, self.x, self.y, self.rot, self.scaleX, self.scaleY, self.xOriginOffset, self.yOriginOffset)
 --  for i=1, self.swirlCount do
 --        love.graphics.draw(spritesheet, self.swirlFrames[math.floor(self.swirlFrame)], self.swirlPos[i].x, self.swirlPos[i].y, 0, self.swirlScale, self.swirlScale)
 --  end
 
   
   -- Physics debug
-    love.graphics.setColor(255,0,0)
-    self.phys:draw('line')
-    love.graphics.setColor(255,255,255)
+--    love.graphics.setColor(255,0,0)
+--    self.phys:draw('line')
+--    love.graphics.setColor(255,255,255)
   end
 end
 

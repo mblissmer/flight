@@ -4,7 +4,7 @@ bg.y=0
 bg.w=1920
 bg.h=666
 bg.quadX=0
-bg.quadY=670
+bg.quadY=329
 bg.speed=40
 bg.scale=2
 return bg

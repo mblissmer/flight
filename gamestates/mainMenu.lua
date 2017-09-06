@@ -15,13 +15,13 @@ local exitBtn
 
 function mainMenu:enter()
   -- Create player sprite
-  playerImage = {}
   local pTable = require 'entities.player'
-  for i=1,table.getn(pTable.animTable) do
-    local qx = pTable.animTable[i][1]
-    local qy = pTable.animTable[i][2]
-    table.insert(playerImage, love.graphics.newQuad(qx, qy, pTable.w, pTable.h, sheetWidth, sheetHeight))
-  end
+  playerImage = love.graphics.newQuad(pTable.quadX, pTable.quadY, pTable.w, pTable.h, sheetWidth, sheetHeight)
+--  for i=1,table.getn(pTable.animTable) do
+--    local qx = pTable.animTable[i][1]
+--    local qy = pTable.animTable[i][2]
+--    table.insert(playerImage, love.graphics.newQuad(qx, qy, pTable.w, pTable.h, sheetWidth, sheetHeight))
+--  end
   xOriginOffset = pTable.w/2
   yOriginOffset = pTable.h/2
   
@@ -84,16 +84,16 @@ function mainMenu:update(dt)
   exitBtn.style.bgColor[2] = exitBtnSlider:getValue() * 255
   newGameBtn.style.bgColor[2] = newGameBtnSlider:getValue() * 255
 
-  currentFrame = currentFrame + animationSpeed * dt
-  if currentFrame >= table.getn(playerImage)+1 then
-    currentFrame = 1
-  end
+--  currentFrame = currentFrame + animationSpeed * dt
+--  if currentFrame >= table.getn(playerImage)+1 then
+--    currentFrame = 1
+--  end
 end
 
 function mainMenu:draw()
   
   gooi.draw()
-  love.graphics.draw(spritesheet, playerImage[math.floor(currentFrame)], screenWidth/2, screenHeight/2, 0, playerScale, playerScale, xOriginOffset, yOriginOffset)
+  love.graphics.draw(spritesheet, playerImage, screenWidth/2, screenHeight/2, 0, playerScale, playerScale, xOriginOffset, yOriginOffset)
 end
 function love.mousepressed(x, y, button)  gooi.pressed() end
 function love.mousereleased(x, y, button) gooi.released() end

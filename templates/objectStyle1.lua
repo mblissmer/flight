@@ -27,6 +27,10 @@ function object1:init(eTable)
   
   
   -- Animation
+  if eTable.anims then
+    self.anims = eTable.anims
+  end
+  
   self.frames = {}
   for i=1,table.getn(eTable.animTable) do
     local qx = eTable.animTable[i][1]
@@ -112,6 +116,22 @@ function object1:update(dt)
       end
     end
     
+    -- Animations
+    if self.anims then
+      --self.anims["move"](self.x,self.y,dt)
+      for i=1, table.getn(self.anims) do
+    -- Relocate anims
+        self.anims[i]["x"] = self.x + self.anims[i]["posX"]
+        self.anims[i]["y"] = self.y + self.anims[i]["posY"]
+        
+        -- Update frame count
+        self.anims[i]["currentFrame"] = self.anims[i]["currentFrame"] + self.anims[i]["speed"] * dt
+        if self.anims[i]["currentFrame"] >= table.getn(self.anims[i]["frames"]) then
+          self.anims[i]["currentFrame"] = 1
+        end
+      end
+    end
+    
     -- Physics
     self.phys:moveTo(self.x, self.y)
   end
@@ -119,6 +139,11 @@ end
 
 function object1:draw()
   if self.active then
+    if self.anims then
+      for i=1, table.getn(self.anims) do
+        love.graphics.draw(spritesheet, self.anims[i]["frames"][math.floor(self.anims[i]["currentFrame"])], self.anims[i]["x"], self.anims[i]["y"], self.anims[i]["rot"], self.anims[i]["scale"], self.anims[i]["scale"], self.anims[i]["centerX"], self.anims[i]["centerY"]) 
+      end
+    end
     love.graphics.draw(spritesheet, self.frames[math.floor(self.currentFrame)], self.x, self.y, self.rot, self.scaleX, self.scaleY, self.xOriginOffset, self.yOriginOffset) 
     love.graphics.setColor(255,0,0)
     self.phys:draw('line')
